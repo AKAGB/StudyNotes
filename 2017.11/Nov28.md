@@ -51,11 +51,11 @@ author: dreamgqk
 
     显示的效果如下：
 
-    ![](/images/a.png)
+    ![a.png](images/a.png)
 
     点击那个蓝色有下划线的部分后，当然前提是地址和资源对应起来：
 
-    ![](/images/dir.png)
+    ![dir.png](images/dir.png)
 
     在我看来html主要的核心其实就是这两个概念，其他的就是关于一些常用标签的记忆和熟悉，当然还要尽量符合**HTML5标准**。
 
