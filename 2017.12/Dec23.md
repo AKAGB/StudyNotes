@@ -1,4 +1,4 @@
-# JavaScript入门
+# JavaScript语法入门
 
 Author: Dream_hh
 
@@ -194,4 +194,105 @@ false
 true
 ```
 
-(3). 方法
+(3). 方法，具体的函数定义可以看后面的函数部分。其实把函数本身就视为对象即可：
+
+```javascript
+> var a = {
+    name: 'a',
+    score: 4,
+    func: function (num) {
+        if (typeof num !== 'number') {
+            throw 'Not a number';
+        } else {
+            return num + this.score;
+        }
+    }
+   };
+undefined
+> a.name;
+'a'
+> a.func();
+Not a number
+> a.func(8);
+12
+```
+
+也可以在对象外定义，然后再添加到对象中，可以注意到如果不是对象`a`调用的话，那么调用对象是`window`（针对浏览器的`console`环境，node下没有`window`）：
+
+```javascript
+> function getName() {
+    return this.name;
+    }
+undefined
+> a.getName = getName;
+[Function: getName]
+> a
+{ name: 'a',
+  score: 4,
+  func: [Function],
+  getName: [Function: getName] }
+> a.getName();
+'a'
+> getName();
+undefined
+```
+
+如果把对象的方法赋给另一个，如果不明确`this`，而且调用了方法后返回`NaN`（非`'use strict'`下，`this`指向`window`）:
+
+```javascript
+> var f = a.func;
+undefined
+> f();
+Not a number
+> f(2);
+NaN
+```
+
+如果是在`'use strict'`下，`this`指向`undefined`，就会引发一个错误：
+
+![Function Error](images/func.png)
+
+补充一下，如果在方法内部定义方法，内部方法如果用了`this`同样也是不明确`this`的指向。总而言之，在调用方法的时候始终要明确`this`指向哪个对象。
+
+(4). `apply`方法，续上面方法中对`this`指向不明确的问题，`apply`方法用于自定义`this`的指向：
+
+```javascript
+function getName() {
+    console.log(this.name);
+}
+
+var a = {
+    name : 'a',
+    score : 4,
+    func : function (num) {
+        if (typeof num !== 'number') {
+            throw 'Not a Number';
+        }
+        else {
+            return num + this.score;
+        }
+    },
+    getAName : getName
+};
+
+a.getAName();
+getName();
+getName.apply(a, []);
+```
+
+放在node中运行：
+
+```
+dreamhh@dreamhh-PC:~/Documents/Code/log$ node test.js
+a
+undefined
+a
+```
+
+`apply`由外部定义的函数对象调用，有两个参数，第一个参数是`this`的绑定对象，第二个参数是函数对象的参数列表，类型为`Array`，这个例子中无参数所以用`[]`。
+
+还有一个`call`函数和`apply`相同，唯一的区别在于`apply`对参数打包，而`call`没有。
+
+### 未完待续
+
+后续内容点击[Others](Dec25.md)。
