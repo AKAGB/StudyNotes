@@ -105,3 +105,39 @@ for i in range(5):
 ![Apply](images/apply.png)
 
 `close()`方法用来关闭进程池，关闭的进程池无法再添加进程。只有使用了`close()`方法才能使用`join()`方法。
+
+### 3. 进程间通信
+
+这里主要介绍队列（Queue），比如有两个进程的通信，一个写一个读：
+
+```python
+from multiprocessing import Process, Queue
+import os, time, random
+
+# 写进程
+def write(q):
+    print('Process to write %s' % os.getpid())
+    for value in ['A', 'B', 'C']:
+        print('Put %s to queue...' % value)
+        q.put(value)
+        time.sleep(random.random())
+
+# 读进程
+def read(q):
+    print('Process to read %s' % os.getpid())
+    while True:
+        value = q.get(True)
+        print('Get %s from queue.' % value)
+
+if __name__ == '__main__':
+    # 父进程创建Queue，传给各个子进程
+    q = Queue()
+    pw = Process(target=write, args=(q,))
+    pr = Process(target=read, args=(q,))
+    pw.start()
+    pr.start()
+    pw.join()
+    pr.terminate()
+```
+
+队列的两个函数`put()`方法将元素添加进队列，`get()`方法获取元素，注意到会阻塞等待。
